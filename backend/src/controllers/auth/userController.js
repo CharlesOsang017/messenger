@@ -57,6 +57,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 //user login
 export const loginUser = asyncHandler(async(req, res)=>{
+  const {email, password} = req.body
   // validation
   if (!email || !password){
     // 400 Bad Request
@@ -68,6 +69,7 @@ export const loginUser = asyncHandler(async(req, res)=>{
   if(!userExists){
     return res.status(404).json({message: 'user not find'})
   }
+  console.log(userExists.password, password);
   // check if the password matches the one hashed in the database
   const isMatch = await bcrypt.compare(password, userExists.password)
 
@@ -103,4 +105,10 @@ export const loginUser = asyncHandler(async(req, res)=>{
   }else {
     res.status(400).json({message: 'Invalid email or password'})
   }
+})
+
+// logout user
+export const logOut = asyncHandler(async(req, res)=>{
+  res.clearCookie(token)
+  res.status(200).json({message: 'user log out successfully!'})
 })
