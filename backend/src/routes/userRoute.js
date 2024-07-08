@@ -1,7 +1,7 @@
 import express from 'express'
 import { getUser, logOut, loginUser, registerUser, updateUser } from '../controllers/auth/userController.js'
-import { adminMiddleware, protect } from '../middleware/authMiddleware.js'
-import { deleteUser } from '../controllers/auth/adminController.js'
+import { adminMiddleware, creatorMiddleware, protect } from '../middleware/authMiddleware.js'
+import { deleteUser, getAllUsers } from '../controllers/auth/adminController.js'
 
 const router = express.Router()
 
@@ -13,4 +13,5 @@ router.patch('/user', protect, updateUser)
 
 // admin routes
 router.delete('/admin/users/:id', protect, adminMiddleware, deleteUser)
+router.get('/admin/users', protect, creatorMiddleware, getAllUsers)
 export default router

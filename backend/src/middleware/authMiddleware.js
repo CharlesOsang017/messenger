@@ -1,6 +1,6 @@
 import User from "../models/auth/userModel.js";
 import jwt from "jsonwebtoken";
-import asyncHandler from 'express-async-handler'
+import asyncHandler from "express-async-handler";
 
 export const protect = asyncHandler(async (req, res, next) => {
   try {
@@ -28,12 +28,36 @@ export const protect = asyncHandler(async (req, res, next) => {
 });
 
 // admin middleware
-export const adminMiddleware = asyncHandler(async(req, res, next)=>{
-    if(req.user && req.user.role === 'admin'){
-        // if user is admin, move to the next middleware/controller
-        next()
-        return;
-    }
-    // if not admin, send 403 forbiden
-    res.status(403).json({message: 'Only admin can perform this operation'})
-})
+export const adminMiddleware = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    // if user is admin, move to the next middleware/controller
+    next();
+    return;
+  }
+  // if not admin, send 403 forbiden
+  res.status(403).json({ message: "Only admin can perform this operation" });
+});
+
+// creator & admin midleware
+export const creatorMiddleware = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.role === "admin" ||  req.user && req.user.role === "creator" ) {
+    // if user is creator & admin move to the next middleware/controller
+    next();
+    return;
+  }
+  // if not creator or admin, send 403 forbidden
+  res
+    .status(403)
+    .json({ message: "Creators/admins can perform this operation" });
+});
+
+// verified middleware
+export const verifiedMiddleware = asyncHandler(async (req, res, next) => {
+  if (req.user && req.user.isVerified) {
+    // if user is verified, move to the next controoler/middleware
+    next();
+    return;
+  }
+  // if not verified, send 403 forbidden
+  res.status(403).json({ message: "Please verify your email" });
+});
